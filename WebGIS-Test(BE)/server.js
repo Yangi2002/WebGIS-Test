@@ -6,7 +6,10 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: "http://localhost:4200"
+  origin: [
+    "http://localhost:4200",
+    "http://localhost:8080"
+  ]
 }));
 
 app.get("/", (req, res) => {

@@ -1,0 +1,20 @@
+services:
+  backend:
+    build:
+      context: "./WebGIS-Test(BE)"
+      dockerfile: Dockerfile
+    container_name: mini-webgis-backend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: "./WebGIS-Test"
+      dockerfile: Dockerfile
+    container_name: mini-webgis-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

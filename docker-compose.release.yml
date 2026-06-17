@@ -1,0 +1,16 @@
+services:
+  backend:
+    image: webgis-test-backend:latest
+    container_name: mini-webgis-backend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  frontend:
+    image: webgis-test-frontend:latest
+    container_name: mini-webgis-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
