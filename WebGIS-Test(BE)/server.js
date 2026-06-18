@@ -1,16 +1,38 @@
+require("dotenv").config({
+  path: process.env.ENV_FILE || ".env.local"
+});
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() });
+
+const BACKEND_HOST = process.env.BACKEND_HOST;
+const BACKEND_PORT = process.env.BACKEND_PORT;
+
+const allowedOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
 app.use(cors({
-  origin: [
-    "http://localhost:4200",
-    "http://localhost:8080"
-  ]
+  origin: function (origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked: ${origin}`));
+  }
 }));
+
+const upload = multer({
+  storage: multer.memoryStorage()
+});
 
 app.get("/", (req, res) => {
   res.send("WebGIS backend is running");
@@ -60,8 +82,6 @@ app.post("/api/upload-shapefile", upload.single("shapefile"), async (req, res) =
   }
 });
 
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log(`WebGIS backend running at http://localhost:${PORT}`);
+app.listen(BACKEND_PORT, BACKEND_HOST, () => {
+  console.log(`WebGIS backend running at http://${BACKEND_HOST}:${BACKEND_PORT}`);
 });

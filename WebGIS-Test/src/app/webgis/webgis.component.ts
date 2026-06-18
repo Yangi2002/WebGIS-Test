@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 
 import type * as Leaflet from 'leaflet';
 
+import { environment } from '../../environments/environment';
+
 interface SearchResult {
   index: number;
   label: string;
@@ -57,6 +59,8 @@ export class WebgisComponent implements AfterViewInit, OnDestroy {
   selectedFeatureProperties: any = null;
 
   isSidebarCollapsed = false;
+
+  private readonly apiBaseUrl = environment.apiBaseUrl.replace(/\/$/, '');
 
   readonly preferredFields = [
     'district',
@@ -214,7 +218,7 @@ export class WebgisComponent implements AfterViewInit, OnDestroy {
 
     this.message = 'Uploading and converting shapefile...';
 
-    fetch('/api/upload-shapefile', {
+    fetch(`${this.apiBaseUrl}/upload-shapefile`, {
       method: 'POST',
       body: formData
     })
